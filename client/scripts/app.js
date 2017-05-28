@@ -24,7 +24,7 @@ app.send = function(message) {
     data: JSON.stringify(message), 
     contentType: 'application/json',
     success: function(data) {
-      console.log('chatterbox: Message Sent ' + data);
+      console.log('chatterbox: Message Sent ', data);
     
       
     },
@@ -50,7 +50,8 @@ app.fetch = function() {
       app.callRenderMessage(_data.results, 'All');
       app.callRenderRoom(_data.results);
   
-      console.log('chatterbox: Messages Fetched' + _data);
+      console.log('chatterbox: Messages Fetched', _data.results);
+      console.log(_data.results);
     },
     error: function(_data) {
       console.log('chatterbox: Didnt Fetch Message');
