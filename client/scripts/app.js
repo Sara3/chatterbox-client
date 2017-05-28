@@ -10,13 +10,14 @@ app.init = function () {
   
   app.handleDropDownChange();
   app.handleSubmit();
-  setInterval(app.callRenderMessage(this.data, 'All'), 3000);
+  //setInterval(app.callRenderMessage(app.data, 'All'), 3000);
 
 };
 
 
 //sends object to the server
 app.send = function(message) {
+
   $.ajax({
     url: app.server,
     type: 'POST',
@@ -24,6 +25,7 @@ app.send = function(message) {
     contentType: 'application/json',
     success: function(data) {
       console.log('chatterbox: Message Sent ' + data);
+    
       
     },
     error: function(data) {
@@ -34,17 +36,21 @@ app.send = function(message) {
 
 //gets the data from the server
 app.fetch = function() {
+  console.log("fetch");
   $.ajax({
     url: app.server,
     type: 'GET',
     _data: 'order=-createdAt', 
     contentType: 'application/json',
     success: function(_data) {
-      app.callRenderMessage(_data.results);
-      app.callRenderRoom(_data.results);
 
+    $('#roomSelect').on('change', function() {
+      app.callRenderMessage(_data.results, $('#roomSelect').val());
+    });
+      app.callRenderMessage(_data.results, 'All');
+      app.callRenderRoom(_data.results);
+  
       console.log('chatterbox: Messages Fetched' + _data);
-      app.data = _data.results;
     },
     error: function(_data) {
       console.log('chatterbox: Didnt Fetch Message');
@@ -93,19 +99,26 @@ app.callRenderRoom = function(arr) {
 
 //display roomname
 app.renderRoom = function(room) {  
-  $('#roomSelect').append(`<option> ${room} </option>`);
+  $('#roomSelect').append(`<option value=${room}> ${room} </option>`);
 };
 
 //Submit user message & click button; creates object
 app.handleSubmit = function() {
+  
   var m = {
     username: 'Sara',
     text: '',
-    roomname: 'Dance'
+    roomname: ''
   };
+  
+
   $('#mit').on( 'click', function() {
+    alert('clicked submit');
+    console.log("SUBMIT" , $('#roomSelect').val());
     m.text = $('#msgInput').val();
+    m.roomname =  $('#roomSelect').val();
     app.send(m);
+    
   });
   //$('#msgInput').val("");
 };
