@@ -7,10 +7,13 @@ var app = {
 app.init = function () {
   app.clearMessages();
   app.fetch();
+  
   app.handleDropDownChange();
   app.handleSubmit();
+  setInterval(app.callRenderMessage(this.data, 'All'), 3000);
 
 };
+
 
 //sends object to the server
 app.send = function(message) {
@@ -34,7 +37,7 @@ app.fetch = function() {
   $.ajax({
     url: app.server,
     type: 'GET',
-    _data: '', 
+    _data: 'order=-createdAt', 
     contentType: 'application/json',
     success: function(_data) {
       app.callRenderMessage(_data.results);
@@ -59,8 +62,8 @@ app.callRenderMessage = function(arr, r) {
   app.clearMessages();
   for (var i = 0; i < arr.length; i++) {
     if (arr[i].roomname === r) {
-      app.renderName(arr[i].username);
       app.renderMessage(arr[i].text);  
+      app.renderName(arr[i].username);
     }
   }
 };
@@ -104,24 +107,23 @@ app.handleSubmit = function() {
     m.text = $('#msgInput').val();
     app.send(m);
   });
+  //$('#msgInput').val("");
 };
 
 app.handleDropDownChange = function() {
-//   $('#roomSelect').on('change', function() {
-//     app.clearMessages();
-//     //app.fetch();
-//     //app.callRenderMessage(_.filter(arr, function)
-//     //app.init();
-//     // if ($(this).val() === 'selectionKey') {
-//     //   app.callRenderMessage();
-//     // } 
-//     //app.send(m);
-//   });
+  $('#roomSelect').on('change', function() {
+    console.log($('#roomSelect').val());
+    app.clearMessages();
+    var arr = app.data;
+    app.callRenderMessage(arr, $('#roomSelect').val());
+  });
 };
 
 app.handleUsernameClick = function() {
-  $('mit').on('click', username, _data, function(username) {
-    event.preventDefault();
-    friendList.push(object[key][i]['username']);
+  $('#mit').on('click', object[i].username, app, function(username) {
+    //event.preventDefault();
+    friendList.push(object[i].username);
   });
 };
+
+app.init();
